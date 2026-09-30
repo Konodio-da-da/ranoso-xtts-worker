@@ -1,0 +1,5 @@
+runpod
+TTS
+torch
+torchaudio
+requests
