@@ -3,7 +3,6 @@ FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
 WORKDIR /app
 
 ENV DEBIAN_FRONTEND=noninteractive
-# Auto-accept the Coqui CPML license terms
 ENV COQUI_TOS_AGREED=1
 ENV PYTHONUNBUFFERED=1
 
@@ -21,9 +20,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
     coqui-tts \
     huggingface_hub
 
-# Pre-download weights with TOS auto-agreed
+# Pre-download XTTS weights
 RUN python3 -c 'from TTS.api import TTS; TTS("tts_models/multilingual/multi-dataset/xtts_v2")'
 
-COPY rp_handler.py /app/rp_handler.py
+# Match the exact file name in your repo:
+COPY handler.py /app/handler.py
 
-CMD ["python", "-u", "/app/rp_handler.py"]
+CMD ["python", "-u", "/app/handler.py"]
