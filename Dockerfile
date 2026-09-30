@@ -20,10 +20,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     coqui-tts \
     huggingface_hub
 
-# Pre-download XTTS weights
-RUN python3 -c 'from TTS.api import TTS; TTS("tts_models/multilingual/multi-dataset/xtts_v2")'
+# Download model checkpoint files directly without executing CUDA code
+RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='coqui/XTTS-v2', local_dir='/root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2')"
 
-# Match the exact file name in your repo:
 COPY handler.py /app/handler.py
 
 CMD ["python", "-u", "/app/handler.py"]
