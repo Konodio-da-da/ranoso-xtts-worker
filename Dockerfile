@@ -15,17 +15,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
+    "transformers<4.46.0" \
+    "numpy<2.0.0" \
     runpod \
     requests \
     soundfile \
-    huggingface_hub \
-    torchaudio \
-    "git+https://github.com/coqui-ai/TTS@dev"
+    coqui-tts \
+    huggingface_hub
 
-# Pre-bake model checkpoint so the worker never spends runtime pulling weights
+# Pre-bake model checkpoint so worker never spends runtime pulling weights
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='coqui/XTTS-v2', local_dir='/root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2')"
 
-# Verify torch and TTS import without error during container build
+# Verify torch and TTS import cleanly during the GitHub Actions build
 RUN python3 -c "import torch; import torchaudio; from TTS.api import TTS; print('PyTorch CUDA Ready:', torch.cuda.is_available())"
 
 COPY handler.py /app/handler.py
